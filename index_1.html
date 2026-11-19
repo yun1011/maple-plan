@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maple Plan｜加拿大打工度假倒數與預算</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f1ea; --card:#fbfaf7; --ink:#1f2622; --muted:#555c57; --line:#dcd6ca;
+    --forest:#2e4436; --sage:#7f9a84; --sand:#c8a971; --maple:#a8392b; --stone:#8d8275; --amber:#b7791f;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans TC",system-ui,sans-serif; font-size:16px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:56px 20px 72px}
+
+  /* 標題 */
+  header{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap;
+    border-bottom:1px solid var(--ink); padding-bottom:22px}
+  .eyebrow{font-family:"Inter","Noto Sans TC",sans-serif; letter-spacing:.14em; text-transform:uppercase; font-size:13px; color:var(--maple)}
+  h1{font-family:"Noto Sans TC",sans-serif; font-weight:700; font-size:clamp(30px,5vw,44px); margin:6px 0 0; letter-spacing:.04em}
+  header p{margin:0; color:var(--muted); max-width:300px; font-size:14px}
+  .leaf-mark{width:22px; height:22px; vertical-align:-3px; margin-right:6px}
+
+  /* 區塊 */
+  section{padding:40px 0; border-bottom:1px solid var(--line)}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:24px}
+  .sec-no{font-family:"Inter","Noto Sans TC",sans-serif; font-weight:600; font-size:18px; color:var(--maple)}
+  h2{font-family:"Noto Sans TC",sans-serif; font-weight:700; font-size:22px; margin:0; letter-spacing:.03em}
+  .sec-note{margin-left:auto; font-size:13px; color:var(--muted)}
+  h3{font-size:13px; font-weight:700; letter-spacing:.04em; color:var(--muted); margin:32px 0 16px; text-transform:uppercase}
+
+  /* 倒數 */
+  .date-row{display:flex; align-items:center; gap:12px; margin-bottom:26px; flex-wrap:wrap}
+  input[type=date], input[type=number], input.num{
+    font:inherit; color:var(--ink); background:transparent; border:none; border-bottom:1px solid var(--ink);
+    padding:4px 2px; outline:none; border-radius:0;
+  }
+  input:focus{border-bottom-color:var(--maple)}
+  .countdown{display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line); border-left:1px solid var(--line)}
+  .cd-box{padding:22px 8px 16px; text-align:center; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--card)}
+  .cd-num{font-family:"Inter","Noto Sans TC",sans-serif; font-weight:600; font-size:clamp(36px,8vw,60px); line-height:1; font-variant-numeric:tabular-nums}
+  .cd-box:first-child .cd-num{color:var(--maple)}
+  .cd-label{font-size:13px; letter-spacing:.08em; color:var(--muted); margin-top:8px}
+  .cd-msg{margin-top:14px; color:var(--muted); font-size:14px}
+  .cd-msg a{color:var(--maple); font-weight:700; text-decoration:none; border-bottom:1px solid var(--maple)}
+  html{scroll-behavior:smooth}
+
+  /* 城市 */
+  .cities{display:flex; flex-wrap:wrap; gap:0; margin-bottom:28px; border:1px solid var(--ink); width:fit-content}
+  .city{font:inherit; font-size:14px; cursor:pointer; border:none; border-right:1px solid var(--ink);
+    background:transparent; padding:10px 20px; color:var(--ink); transition:background .2s,color .2s}
+  .city:last-child{border-right:none}
+  .city small{display:block; font-family:"Inter","Noto Sans TC",sans-serif; font-size:13px; letter-spacing:.04em; color:var(--muted)}
+  .city:hover{background:#ebe6dc}
+  .city.active{background:var(--forest); color:#f4f1ea}
+  .city.active small{color:#c9d3cb}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:22px 44px}
+  @media (max-width:680px){.grid2{grid-template-columns:1fr} .cities{width:100%} .city{flex:1; padding:10px 8px}}
+  .field .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:8px}
+  .field .name{font-weight:500}
+  .amt{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .amt .p{font-weight:700}
+  .amt .s{display:block; font-size:13px; color:var(--muted)}
+  .hint{font-size:13px; color:var(--muted)}
+
+  input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:18px; background:transparent; cursor:pointer}
+  input[type=range]::-webkit-slider-runnable-track{height:2px; background:var(--line)}
+  input[type=range]::-moz-range-track{height:2px; background:var(--line)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--forest); margin-top:-6px; border:2px solid var(--paper); box-shadow:0 0 0 1px var(--forest)}
+  input[type=range]::-moz-range-thumb{width:12px; height:12px; border-radius:50%; background:var(--forest); border:2px solid var(--paper)}
+
+  .rate-row{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+  .rate-row input{width:90px; font-size:18px; font-family:"Inter","Noto Sans TC",sans-serif; font-weight:600}
+
+  .city .fr{font-family:"Inter",sans-serif; font-size:10px; font-weight:700; letter-spacing:.06em; margin-left:6px; padding:0 4px; border:1px solid currentColor; vertical-align:2px}
+  .lang-note{display:none; margin:-12px 0 24px; padding:12px 16px; border-left:3px solid var(--sage); background:#eef1ea; font-size:15px; line-height:1.8}
+  .lang-note b{color:var(--forest)}
+  .lang-note ul{margin:4px 0 0; padding-left:20px}
+  .lang-note.warn{border-left-color:var(--amber); background:#fbf3e2}
+  .lang-note.warn b{color:var(--amber)}
+  .checklist .ftag{font-size:12px; font-weight:700; color:var(--amber); border:1px solid var(--amber); padding:0 6px; margin-left:8px; vertical-align:1px}
+  /* 城市比較 */
+  .cmp-row{display:grid; grid-template-columns:72px 1fr 150px; align-items:center; gap:14px; padding:7px 0; cursor:pointer}
+  .cmp-row .cn{font-weight:500}
+  .cmp-row.sel .cn{color:var(--forest); font-weight:700}
+  .cmp-row.sel .cn::before{content:"▸ "}
+  .cmp-track{display:flex; height:18px; background:transparent}
+  .cmp-track div{height:100%; transition:flex-basis .4s ease}
+  .cmp-row .ct{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .cmp-row .ct small{display:block; font-size:13px; color:var(--muted)}
+  .cmp-legend{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:13px; color:var(--muted); margin:8px 0 18px 86px}
+  .cmp-legend i{display:inline-block; width:10px; height:10px; margin-right:6px; vertical-align:0}
+  .cmp-insight{border-left:3px solid var(--forest); background:#eef1ea; padding:12px 16px; font-size:15px; line-height:1.8}
+  .cmp-insight b{color:var(--maple)}
+  .tbl-wrap{overflow-x:auto; margin:16px 0 8px}
+  .cmp-table{min-width:560px}
+  .cmp-table th{font-size:13px; font-weight:700; color:var(--muted); text-align:right; padding:8px 4px; border-bottom:1px solid var(--ink)}
+  .cmp-table th:first-child{text-align:left}
+  .cmp-table th.sel{color:var(--forest)}
+  .cmp-table td small{display:block; font-size:12px; color:var(--muted)}
+  .cmp-table td.hi{color:var(--maple); font-weight:700}
+  .cmp-table td.lo{color:var(--forest); font-weight:700}
+  .cmp-table tr.sum td{font-weight:700; border-top:1px solid var(--ink)}
+  .cmp-table td.spread{color:var(--muted)}
+  @media (max-width:600px){.cmp-row{grid-template-columns:56px 1fr 112px; gap:8px} .cmp-legend{margin-left:0}}
+
+  /* 結果 */
+  .total{display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--ink); background:var(--card)}
+  .total > div{padding:26px 24px}
+  .total > div:first-child{border-right:1px solid var(--ink)}
+  .total .k{font-size:13px; letter-spacing:.08em; color:var(--muted)}
+  .total .v{font-family:"Inter","Noto Sans TC",sans-serif; font-weight:700; font-size:clamp(32px,6vw,46px); line-height:1.1; font-variant-numeric:tabular-nums}
+  .total .twd .v{color:var(--maple)}
+  @media (max-width:560px){.total{grid-template-columns:1fr} .total > div:first-child{border-right:none; border-bottom:1px solid var(--ink)}}
+
+  .bar{display:flex; height:10px; margin:28px 0 18px}
+  .bar div{transition:flex-grow .5s ease}
+  table{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums}
+  td{padding:10px 4px; border-bottom:1px solid var(--line)}
+  td.r{text-align:right; white-space:nowrap}
+  td .dot{display:inline-block; width:9px; height:9px; margin-right:10px}
+  td.pct{color:var(--muted); width:60px}
+
+  /* 存錢 */
+  .progress{height:4px; background:var(--line); margin:26px 0 10px; position:relative}
+  .progress div{height:100%; width:0; background:var(--forest); transition:width .6s ease}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); margin-top:26px; border-top:1px solid var(--line)}
+  .stat{padding:18px 0 4px}
+  .stat + .stat{padding-left:22px; border-left:1px solid var(--line)}
+  .stat .k{font-size:13px; letter-spacing:.06em; color:var(--muted)}
+  .stat .v{font-family:"Inter","Noto Sans TC",sans-serif; font-weight:700; font-size:24px; line-height:1.2; font-variant-numeric:tabular-nums}
+  .stat .s{font-size:13px; color:var(--muted)}
+  @media (max-width:600px){.stats{grid-template-columns:1fr} .stat + .stat{padding-left:0; border-left:none; border-top:1px solid var(--line)}}
+  .notice{margin-top:22px; padding:12px 16px; font-size:14px; border-left:3px solid}
+  .notice.ok{border-color:var(--sage); background:#eef1ea}
+  .notice.warn{border-color:var(--amber); background:#fbf3e2}
+  .status{margin-left:auto; font-size:13px; font-weight:700; padding:3px 12px; border:1.5px solid; letter-spacing:.06em}
+  .status.ok{color:var(--forest); border-color:var(--forest); background:#eef1ea}
+  .status.warn{color:var(--amber); border-color:var(--amber); background:#fbf3e2}
+  .status.fail{color:var(--maple); border-color:var(--maple); background:#f6ebe7}
+  .progress div.warn{background:var(--amber)} .progress div.fail{background:var(--maple)}
+  .notice.no{border-color:var(--maple); background:#f6ebe7}
+  .fail{display:none; margin-top:26px; border:2px solid var(--maple); padding:22px 24px; position:relative; background:#fbf3f0}
+  .fail.show{display:block; animation:stamp .45s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes stamp{from{transform:scale(1.25); opacity:0}to{transform:scale(1); opacity:1}}
+  .fail .title{font-size:28px; font-weight:700; color:var(--maple); letter-spacing:.2em}
+  .fail .title small{font-family:"Inter",sans-serif; font-size:13px; letter-spacing:.14em; margin-left:10px}
+  .fail ul{margin:10px 0 0; padding-left:20px}
+  .fail li{margin:4px 0}
+  .fail .tip{margin-top:10px; font-size:14px; color:var(--muted)}
+  .stamp{display:none; position:absolute; left:50%; top:50%; z-index:2; transform:translate(-50%,-50%) rotate(-8deg); font-size:30px !important; padding:6px 22px !important;
+    border:3px solid var(--maple); color:var(--maple); font-weight:700; font-size:22px; letter-spacing:.2em; padding:4px 14px; background:rgba(251,250,247,.85)}
+  .countdown-wrap{position:relative}
+  .countdown-wrap.failed .stamp:not(.ok){display:block}
+  .stamp.ok{border-color:var(--forest); color:var(--forest)}
+  .countdown-wrap.departed .stamp.ok{display:block; animation:stamp-in .5s cubic-bezier(.2,1.6,.4,1)}
+  .countdown-wrap.departed .cd-num{opacity:.35}
+  .countdown-wrap.departed .cd-box:first-child .cd-num{color:var(--forest)}
+  @keyframes stamp-in{from{transform:translate(-50%,-50%) rotate(-8deg) scale(1.6); opacity:0}to{transform:translate(-50%,-50%) rotate(-8deg) scale(1); opacity:1}}
+  .countdown-wrap.ready .cd-box:first-child{background:#eef1ea}
+  .leaf-fall{position:fixed; top:-30px; z-index:50; pointer-events:none; animation:leaf-fall linear forwards}
+  .leaf-fall svg{display:block; animation:leaf-sway ease-in-out infinite alternate; animation-duration:inherit}
+  @keyframes leaf-fall{to{transform:translateY(115vh) rotate(720deg)}}
+  @keyframes leaf-sway{from{translate:-30px 0}to{translate:30px 0}}
+  .countdown-wrap.failed .cd-num{opacity:.35}
+
+  /* 清單 */
+  .checklist{list-style:none; padding:0; margin:0; border-top:1px solid var(--line)}
+  .checklist li{display:flex; gap:14px; align-items:flex-start; padding:12px 10px 12px 12px; border-bottom:1px solid var(--line); cursor:pointer; border-left:3px solid transparent; transition:background .2s}
+  .checklist li:hover{background:#efebe3}
+  .checklist .txt{flex:1}
+  .checklist .due{display:block; font-size:13px; color:var(--muted)}
+  .checklist .utag{flex:none; font-size:13px; font-weight:700; padding:2px 10px; border:1.5px solid; white-space:nowrap; margin-top:2px}
+  .u-over{border-left-color:var(--maple) !important; background:#f6ebe7} .u-over .utag{color:var(--maple)}
+  .u-urgent{border-left-color:var(--amber) !important; background:#fbf3e2} .u-urgent .utag{color:var(--amber)}
+  .u-soon .utag{color:var(--stone)}
+  .u-calm .utag{color:var(--sage)}
+  .u-done .utag{color:var(--muted); border-color:var(--line)}
+  @media (max-width:560px){.checklist li{flex-wrap:wrap} .checklist .utag{margin-left:52px}}
+  .checklist .idx{font-family:"Inter","Noto Sans TC",sans-serif; color:var(--muted); width:22px; flex:none}
+  .checklist .box{width:16px; height:16px; flex:none; border:1px solid var(--ink); margin-top:4px; position:relative; transition:background .2s}
+  .checklist li.done .box{background:var(--forest); border-color:var(--forest)}
+  .checklist li.done .box::after{content:""; position:absolute; left:4px; top:1px; width:5px; height:9px; border:solid var(--paper); border-width:0 2px 2px 0; transform:rotate(45deg)}
+  .checklist li.done .txt{color:var(--muted); text-decoration:line-through; text-decoration-color:var(--stone)}
+  .check-foot{display:flex; justify-content:space-between; align-items:center; margin-top:18px; font-size:14px; color:var(--muted)}
+  .btn{font:inherit; font-size:13px; cursor:pointer; background:transparent; border:1px solid var(--ink); padding:7px 16px; color:var(--ink); letter-spacing:.08em}
+  .btn:hover{background:var(--ink); color:var(--paper)}
+
+  footer{padding-top:28px; font-size:13px; color:var(--muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">
+        <svg class="leaf-mark" viewBox="0 0 24 24" fill="#a8392b"><path d="M12 2l1.6 4.2 2.6-1.4-.6 5 3.6-2.6.6 2.4 2.6-.4-1.4 3.6 1.6 1-5.4 4 .6 2.2-4.4-.8.2 5.8h-1.6l.2-5.8-4.4.8.6-2.2-5.4-4 1.6-1L3 9.2l2.6.4.6-2.4 3.6 2.6-.6-5 2.6 1.4z"/></svg>
+        International Experience Canada
+      </div>
+      <h1>楓葉出發計畫</h1>
+    </div>
+    <p>打工度假的倒數、預算與存錢進度，<br>所有金額以加幣與台幣並列。</p>
+  </header>
+
+  <!-- 01 倒數 -->
+  <section>
+    <div class="sec-head"><span class="sec-no">01</span><h2>出發倒數</h2></div>
+    <div class="date-row">
+      <label for="departDate">出發日期</label>
+      <input type="date" id="departDate">
+    </div>
+    <div class="countdown-wrap" id="cdWrap"><span class="stamp">出發失敗</span><span class="stamp ok">出發成功</span>
+    <div class="countdown">
+      <div class="cd-box"><div class="cd-num" id="cdD">0</div><div class="cd-label">DAYS 天</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdH">0</div><div class="cd-label">HOURS 時</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdM">0</div><div class="cd-label">MIN 分</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdS">0</div><div class="cd-label">SEC 秒</div></div>
+    </div>
+    </div>
+    <div class="cd-msg" id="cdMsg"></div>
+  </section>
+
+  <!-- 02 預算 -->
+  <section>
+    <div class="sec-head"><span class="sec-no">02</span><h2>預算設定</h2><span class="sec-note">所有數值皆可調整</span></div>
+
+    <div class="cities" id="cities"></div>
+    <div class="lang-note" id="langNote"></div>
+
+    <h3>城市比較・每月生活費</h3>
+    <div class="cmp" id="cmpBars"></div>
+    <div class="cmp-legend" id="cmpLegend"></div>
+    <div class="cmp-insight" id="cmpInsight"></div>
+    <div class="tbl-wrap"><table class="cmp-table" id="cmpTable"></table></div>
+    <div class="hint">目前選擇的城市使用你調整後的金額，其他城市為預設值。紅字＝該項最貴，綠字＝該項最便宜。</div>
+
+    <h3>每月生活費</h3>
+    <div class="grid2" id="monthly"></div>
+
+    <h3>一次性費用</h3>
+    <div class="grid2">
+      <div class="field">
+        <div class="top"><span class="name">IEC 申請費</span><span class="amt" id="iecOut"></span></div>
+        <div class="hint">參與費 184.75 ＋ 開放式工作簽證費 100 ＋ 生物辨識 85（CAD）</div>
+      </div>
+      <div class="field">
+        <div class="top"><span class="name">首月押金</span><span class="amt" id="depositOut"></span></div>
+        <div class="hint">以一個月房租計算</div>
+      </div>
+      <div class="field">
+        <div class="top"><span class="name">單程機票</span><span class="amt" id="flightOut"></span></div>
+        <input type="range" id="flight" min="10000" max="60000" step="1000">
+      </div>
+      <div class="field">
+        <div class="top"><span class="name">海外保險（一年）</span><span class="amt" id="insuranceOut"></span></div>
+        <input type="range" id="insurance" min="10000" max="80000" step="1000">
+      </div>
+    </div>
+
+    <h3>其他參數</h3>
+    <div class="grid2">
+      <div class="field">
+        <div class="top"><span class="name">找到工作前的緩衝期</span><span class="amt" id="bufferOut"></span></div>
+        <input type="range" id="buffer" min="1" max="6" step="1">
+      </div>
+      <div class="field">
+        <div class="top"><span class="name">匯率</span></div>
+        <div class="rate-row">1 CAD ＝ <input type="text" inputmode="decimal" class="num" data-decimal="1" id="rate" autocomplete="off"> TWD</div>
+        <div class="hint">請以銀行牌告匯率為準</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 結果 -->
+  <section>
+    <div class="sec-head"><span class="sec-no">03</span><h2>預估總預算</h2></div>
+    <div class="total">
+      <div class="twd"><div class="k">新台幣 TWD</div><div class="v" id="totalTWD">0</div></div>
+      <div class="cad"><div class="k">加幣 CAD</div><div class="v" id="totalCAD">0</div></div>
+    </div>
+    <div class="bar" id="bar"></div>
+    <table><tbody id="breakdown"></tbody></table>
+  </section>
+
+  <!-- 04 存錢 -->
+  <section id="sec-savings">
+    <div class="sec-head"><span class="sec-no">04</span><h2>存錢進度</h2><span class="status" id="statusPill"></span></div>
+    <div class="rate-row">目前存款 NT$ <input type="text" inputmode="numeric" class="num" id="savings" autocomplete="off" style="width:150px"> <span class="hint" id="savingsCAD"></span></div>
+    <div class="progress"><div id="progFill"></div></div>
+    <div class="hint" id="progText"></div>
+    <div class="stats">
+      <div class="stat"><div class="k">尚差</div><div class="v" id="stGap">–</div><div class="s" id="stGapS"></div></div>
+      <div class="stat"><div class="k">距離出發</div><div class="v" id="stMonths">–</div><div class="s">以每月 30.4 天計</div></div>
+      <div class="stat"><div class="k">每月需存</div><div class="v" id="stPerMonth">–</div><div class="s" id="stPerMonthS"></div></div>
+    </div>
+    <h3>每月存款目標</h3>
+    <div class="rate-row">每月預計存 NT$ <input type="text" inputmode="numeric" class="num" id="monthlyGoal" autocomplete="off" style="width:150px"> <span class="hint" id="goalCAD"></span></div>
+    <div class="stats">
+      <div class="stat"><div class="k">每月差額</div><div class="v" id="gMonthGap">–</div><div class="s" id="gMonthGapS"></div></div>
+      <div class="stat"><div class="k">出發時預計存到</div><div class="v" id="gProjected">–</div><div class="s" id="gProjectedS"></div></div>
+      <div class="stat"><div class="k">出發時差額</div><div class="v" id="gFinalGap">–</div><div class="s" id="gFinalGapS"></div></div>
+    </div>
+    <div class="notice" id="goalNotice"></div>
+    <div class="fail" id="failBox">
+      <div class="title">出發失敗<small>MISSION FAILED</small></div>
+      <ul id="failReasons"></ul>
+      <div class="tip" id="failTip"></div>
+    </div>
+
+    <div class="notice" id="fundNotice"></div>
+  </section>
+
+  <!-- 05 清單 -->
+  <section id="sec-prep">
+    <div class="sec-head"><span class="sec-no">05</span><h2>出發前準備</h2><span class="sec-note" id="checkCount"></span></div>
+    <div class="fail" id="failBoxPrep" style="margin:0 0 20px">
+      <div class="title">出發失敗<small>MISSION FAILED</small></div>
+      <ul id="failReasonsPrep"></ul>
+      <div class="tip">建議：盡快完成逾期的準備事項並打勾，或延後出發日。</div>
+    </div>
+    <ul class="checklist" id="checklist"></ul>
+    <div class="check-foot"><span id="checkMsg"></span><button class="btn" id="resetBtn">重設全部</button></div>
+  </section>
+
+  <footer>
+    <span>金額皆為粗估，簽證費用與規定請以加拿大移民局（IRCC）官方公告為準。</span>
+    <span>Built with Vibe Coding</span>
+  </footer>
+</div>
+
+<script>
+/* ===== 資料 ===== */
+const CITIES = {
+  vancouver: { name:"溫哥華", en:"VANCOUVER", lang:"英文", rent:1200, food:450, transit:106, phone:45, misc:200 },
+  toronto:   { name:"多倫多", en:"TORONTO",   lang:"英文", rent:1150, food:450, transit:156, phone:45, misc:200 },
+  calgary:   { name:"卡加利", en:"CALGARY",   lang:"英文", rent:850,  food:400, transit:115, phone:45, misc:180 },
+  montreal:  { name:"蒙特婁", en:"MONTRÉAL",  lang:"法文為主（英文為輔）", french:true, rent:800,  food:400, transit:97,  phone:45, misc:180 },
+};
+const MONTHLY_ITEMS = [
+  { key:"rent",    label:"房租（分租）", max:2500, step:50 },
+  { key:"food",    label:"餐費",         max:1200, step:10 },
+  { key:"transit", label:"交通月票",     max:300,  step:1  },
+  { key:"phone",   label:"手機網路",     max:150,  step:5  },
+  { key:"misc",    label:"雜支娛樂",     max:800,  step:10 },
+];
+const IEC_FEE = 369.75;
+const FUND_PROOF = 2500;
+/* 「出發失敗」門檻：符合任一條就判定失敗 */
+const FAIL_RATIO = 0.5;        // 出發時預計存款不到總預算的 50%
+const FAIL_MONTHLY = 80000;    // 每月需存超過 NT$ 80,000（超出一般月薪可負擔）
+/* 「警告」門檻：沒到失敗，但需要注意 */
+const WARN_MONTHLY = 40000;    // 每月需存超過 NT$ 40,000
+/* 準備事項：lead = 建議在出發前幾天完成（粗估），陣列順序即 id，勿任意調換以免已勾選紀錄錯亂 */
+const CHECK_ITEMS = [
+  { t:"確認護照效期涵蓋整段停留期間",          lead:300 },
+  { t:"在 IRCC 建立帳號，送出 IEC 資料進入抽籤池", lead:270 },
+  { t:"收到邀請（ITA）後送出工作簽證申請",       lead:210 },
+  { t:"辦理良民證（警察刑事紀錄證明）",          lead:230 },
+  { t:"完成生物辨識（指紋與照相）",              lead:180 },
+  { t:"準備資金證明（銀行英文存款證明）",        lead:45  },
+  { t:"購買涵蓋整段期間的海外保險",              lead:30  },
+  { t:"訂機票",                                  lead:90  },
+  { t:"安排第一個月的住處",                      lead:21  },
+  { t:"準備英文履歷",                            lead:30  },
+  { t:"兌換加幣、辦理國際提款卡",                lead:14  },
+  { t:"學習基礎法文（魁北克省官方語言為法文）",   lead:180, city:"montreal" },
+  { t:"準備法文版履歷",                          lead:30,  city:"montreal" },
+];
+/* 只顯示適用於目前城市的準備事項 */
+const activeItems = () => CHECK_ITEMS.map((it,i)=>({...it,i})).filter(it => !it.city || it.city === state.city);
+const DEFAULTS = {
+  city:"vancouver", ...CITIES.vancouver,
+  flight:25000, insurance:35000, buffer:3, rate:23.0, savings:50000, monthlyGoal:15000,
+  departDate:"2027-09-01", checks:[]
+};
+
+/* ===== 狀態（localStorage 自動儲存） ===== */
+let state = load();
+let failed = false;
+let celebrated = false;
+let ready = false;      // 出發前就已全部準備完成
+/* 慶祝用的楓葉雨 */
+function leafRain(){
+  const leaf = `<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M12 2l1.6 4.2 2.6-1.4-.6 5 3.6-2.6.6 2.4 2.6-.4-1.4 3.6 1.6 1-5.4 4 .6 2.2-4.4-.8.2 5.8h-1.6l.2-5.8-4.4.8.6-2.2-5.4-4 1.6-1L3 9.2l2.6.4.6-2.4 3.6 2.6-.6-5 2.6 1.4z"/></svg>`;
+  const colors = ["#c0392b","#e07a2e","#e8b23a","#a8392b","#d4573a"];   // 紅、橘、金的秋天楓葉色
+  for(let i=0;i<90;i++) setTimeout(() => {
+    const el = document.createElement("span");
+    el.className = "leaf-fall"; el.innerHTML = leaf;
+    const size = 16 + Math.random()*26;
+    el.style.cssText += `left:${Math.random()*100}vw;width:${size}px;height:${size}px;color:${colors[i%colors.length]};animation-duration:${4+Math.random()*5}s;opacity:${.75+Math.random()*.25}`;
+    document.body.appendChild(el);
+    el.addEventListener("animationend", () => el.remove());
+  }, i*60);
+}
+
+let failSources = [];   // 失敗原因來自哪些區塊：savings／prep
+function load(){
+  try{ const s = JSON.parse(localStorage.getItem("mapleplan")); if(s) return {...DEFAULTS, ...s}; }catch(e){}
+  return {...DEFAULTS, checks:[]};
+}
+function save(){ try{ localStorage.setItem("mapleplan", JSON.stringify(state)); }catch(e){} }
+
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString("en-US");
+const rate = () => state.rate > 0 ? state.rate : 1;
+/* 加幣與台幣並列：primary 為主要顯示幣別 */
+const dualCAD = cad => `<span class="p">CAD ${fmt(cad)}</span><span class="s">NT$ ${fmt(cad*rate())}</span>`;
+const dualTWD = twd => `<span class="p">NT$ ${fmt(twd)}</span><span class="s">CAD ${fmt(twd/rate())}</span>`;
+
+/* ===== 城市 ===== */
+function renderCities(){
+  $("cities").innerHTML = Object.entries(CITIES).map(([k,c]) =>
+    `<button class="city ${state.city===k?"active":""}" data-city="${k}">${c.name}${c.french?'<span class="fr">FR</span>':""}<small>${c.en}</small></button>`).join("");
+}
+$("cities").addEventListener("click", e => {
+  const btn = e.target.closest(".city"); if(!btn) return;
+  state.city = btn.dataset.city; Object.assign(state, CITIES[state.city]);
+  renderCities(); syncInputs(); update();
+});
+
+/* ===== 每月生活費滑桿 ===== */
+$("monthly").innerHTML = MONTHLY_ITEMS.map(it => `
+  <div class="field">
+    <div class="top"><span class="name">${it.label}</span><span class="amt" id="${it.key}Out"></span></div>
+    <input type="range" id="${it.key}" min="0" max="${it.max}" step="${it.step}">
+  </div>`).join("");
+
+const numericIds = [...MONTHLY_ITEMS.map(i=>i.key), "flight","insurance","buffer","rate","savings","monthlyGoal"];
+/* ===== 文字輸入框：輸入時自動轉為數字 =====
+   - 全形數字（０１２…）自動轉半形
+   - 中文、英文、符號等非數字字元自動移除
+   - 自動加上千分位逗號（例：50000 → 50,000）
+   - 支援「5萬」「3.5萬」「2千」「20k」等簡寫，離開欄位時換算成數字 */
+function toHalfWidth(str){
+  return str.replace(/[０-９．，]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+}
+function parseShorthand(str){
+  const t = toHalfWidth(str).replace(/,/g, "").trim().toLowerCase();
+  const m = t.match(/^(\d*\.?\d+)\s*(萬|万|w|千|k)$/);
+  if(!m) return null;
+  const mult = {"萬":10000, "万":10000, "w":10000, "千":1000, "k":1000}[m[2]];
+  return Math.round(parseFloat(m[1]) * mult);
+}
+function cleanNumber(raw, allowDecimal){
+  let t = toHalfWidth(raw).replace(allowDecimal ? /[^\d.]/g : /[^\d]/g, "");
+  if(allowDecimal){ const i = t.indexOf("."); if(i !== -1) t = t.slice(0, i+1) + t.slice(i+1).replace(/\./g, ""); }
+  return t;
+}
+function formatWithCommas(t){
+  const [intPart, dec] = t.split(".");
+  const withComma = (intPart || "").replace(/^0+(?=\d)/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return dec !== undefined ? `${withComma || "0"}.${dec}` : withComma;
+}
+document.querySelectorAll("input.num").forEach(el => {
+  const allowDecimal = el.dataset.decimal === "1";
+  el.addEventListener("input", e => {
+    if(e.isComposing) return;                         // 注音輸入法選字中先不處理
+    const raw = el.value;
+    if(/(萬|万|千|k|w)\s*$/i.test(raw)) return;      // 打到「萬」「k」時，等離開欄位再換算
+    const caret = el.selectionStart ?? raw.length;
+    // 打字時先允許小數點（方便輸入「3.5萬」），離開欄位時再取整數
+    const digitsBefore = cleanNumber(raw.slice(0, caret), true).length;
+    const cleaned = cleanNumber(raw, true);
+    const formatted = allowDecimal ? cleaned : formatWithCommas(cleaned);
+    el.value = formatted;
+    // 讓游標停在原本那個數字後面
+    let pos = 0, count = 0;
+    while(pos < formatted.length && count < digitsBefore){ if(/[\d.]/.test(formatted[pos])) count++; pos++; }
+    try{ el.setSelectionRange(pos, pos); }catch(_){}
+    state[el.id] = parseFloat(cleaned) || 0; update();
+  });
+  el.addEventListener("compositionend", () => el.dispatchEvent(new Event("input")));
+  el.addEventListener("blur", () => {
+    const sh = parseShorthand(el.value);
+    if(sh !== null) state[el.id] = sh;
+    else state[el.id] = parseFloat(cleanNumber(el.value, true)) || 0;
+    if(!allowDecimal) state[el.id] = Math.round(state[el.id]);
+    if(el.id === "rate" && state.rate <= 0) state.rate = DEFAULTS.rate;
+    el.value = allowDecimal ? String(state[el.id]) : formatWithCommas(String(state[el.id]));
+    update();
+  });
+});
+
+numericIds.filter(id => !$(id).classList.contains("num")).forEach(id => $(id).addEventListener("input", e => {
+  state[id] = parseFloat(e.target.value) || 0; update();
+}));
+$("departDate").addEventListener("change", e => { state.departDate = e.target.value; update(); tick(); renderChecklist(); });
+
+function syncInputs(){
+  numericIds.forEach(id => {
+    const el = $(id);
+    el.value = el.classList.contains("num") && el.dataset.decimal !== "1" ? formatWithCommas(String(state[id])) : state[id];
+  });
+  $("departDate").value = state.departDate;
+}
+
+function monthsLeft(){
+  if(!state.departDate) return 0;
+  const ms = new Date(state.departDate+"T00:00:00") - new Date();
+  return Math.max(0, ms / (1000*60*60*24*30.44));
+}
+
+/* ===== 主要計算 ===== */
+const ITEM_COLORS = { rent:"var(--maple)", food:"var(--sand)", transit:"var(--sage)", phone:"var(--stone)", misc:"var(--forest)" };
+function renderCompare(){
+  const r = rate();
+  const keys = MONTHLY_ITEMS.map(i=>i.key);
+  // 目前城市用調整後的數字，其他用預設值
+  const data = Object.entries(CITIES).map(([k,c]) => {
+    const v = {}; keys.forEach(x => v[x] = (k === state.city ? state[x] : c[x]));
+    return { k, name:c.name, v, total: keys.reduce((s,x)=>s+v[x],0) };
+  });
+  const maxTotal = Math.max(...data.map(d=>d.total)) || 1;
+
+  // 堆疊長條
+  $("cmpBars").innerHTML = data.map(d => `
+    <div class="cmp-row ${d.k===state.city?"sel":""}" data-city="${d.k}">
+      <span class="cn">${d.name}</span>
+      <div class="cmp-track">${keys.map(x => `<div style="flex:0 0 ${d.v[x]/maxTotal*100}%;background:${ITEM_COLORS[x]}" title="${MONTHLY_ITEMS.find(i=>i.key===x).label} CAD ${fmt(d.v[x])}"></div>`).join("")}</div>
+      <span class="ct">CAD ${fmt(d.total)}<small>NT$ ${fmt(d.total*r)}</small></span>
+    </div>`).join("");
+  $("cmpLegend").innerHTML = MONTHLY_ITEMS.map(i => `<span><i style="background:${ITEM_COLORS[i.key]}"></i>${i.label.replace(/（.*）/,"")}</span>`).join("");
+
+  // 明細表：每一列標出最貴、最便宜
+  const head = `<tr><th>項目</th>${data.map(d=>`<th class="${d.k===state.city?"sel":""}">${d.name}</th>`).join("")}<th>最大差距</th></tr>`;
+  const rows = MONTHLY_ITEMS.map(it => {
+    const vals = data.map(d=>d.v[it.key]); const hi = Math.max(...vals), lo = Math.min(...vals);
+    return `<tr><td>${it.label}</td>${data.map(d => {
+      const v = d.v[it.key]; const c = hi!==lo && v===hi ? "hi" : hi!==lo && v===lo ? "lo" : "";
+      return `<td class="r ${c}">CAD ${fmt(v)}<small>NT$ ${fmt(v*r)}</small></td>`;
+    }).join("")}<td class="r spread">CAD ${fmt(hi-lo)}<small>NT$ ${fmt((hi-lo)*r)}</small></td></tr>`;
+  }).join("");
+  const tHi = Math.max(...data.map(d=>d.total)), tLo = Math.min(...data.map(d=>d.total));
+  const sum = `<tr class="sum"><td>每月合計</td>${data.map(d => `<td class="r ${d.total===tHi?"hi":d.total===tLo?"lo":""}">CAD ${fmt(d.total)}<small>NT$ ${fmt(d.total*r)}</small></td>`).join("")}<td class="r spread">CAD ${fmt(tHi-tLo)}<small>NT$ ${fmt((tHi-tLo)*r)}</small></td></tr>`;
+  const langRow = `<tr><td>主要語言</td>${data.map(d => `<td class="r" style="${CITIES[d.k].french?"color:var(--amber);font-weight:700":""}">${CITIES[d.k].lang}</td>`).join("")}<td class="r spread">—</td></tr>`;
+  $("cmpTable").innerHTML = head + rows + sum + langRow;
+
+  // 文字解讀：最貴 vs 最便宜差在哪；目前城市 vs 平均貴在哪
+  const sorted = [...data].sort((a,b)=>b.total-a.total);
+  const top = sorted[0], low = sorted[sorted.length-1];
+  const topNames = sorted.filter(d => Math.round(d.total) === Math.round(top.total)).map(d=>d.name);
+  const lowNames = sorted.filter(d => Math.round(d.total) === Math.round(low.total)).map(d=>d.name);
+  const diffs = MONTHLY_ITEMS.map(it => ({ label: it.label.replace(/（.*）/,""), d: top.v[it.key]-low.v[it.key] })).sort((a,b)=>b.d-a.d);
+  const totalDiff = top.total - low.total;
+  const lines = [];
+  if(totalDiff > 0){
+    const main = diffs[0];
+    const topTxt = topNames.length > 1 ? `<b>${topNames.join("、")}</b>（並列）` : `<b>${top.name}</b>`;
+    lines.push(`最貴是 ${topTxt}（每月 CAD ${fmt(top.total)}／NT$ ${fmt(top.total*r)}），比最便宜的 ${lowNames.join("、")} 多 CAD ${fmt(totalDiff)}（NT$ ${fmt(totalDiff*r)}）。`
+      + (topNames.length > 1 ? `以 ${top.name} 來看，` : "") + `主要貴在 <b>${main.label}</b>，差 CAD ${fmt(main.d)}，占差距的 ${Math.round(main.d/totalDiff*100)}%`
+      + (diffs[1] && diffs[1].d > 0 ? `；其次是${diffs[1].label}，差 CAD ${fmt(diffs[1].d)}。` : "。"));
+  }
+  const cur = data.find(d=>d.k===state.city);
+  const avg = {}; keys.forEach(x => avg[x] = data.reduce((s,d)=>s+d.v[x],0)/data.length);
+  const avgTotal = data.reduce((s,d)=>s+d.total,0)/data.length;
+  const curDiff = cur.total - avgTotal;
+  const itemDiffs = MONTHLY_ITEMS.map(it => ({ label: it.label.replace(/（.*）/,""), d: cur.v[it.key]-avg[it.key] }));
+  if(Math.abs(curDiff) < 1){
+    lines.push(`你選的 ${cur.name} 和四城平均差不多。`);
+  }else if(curDiff > 0){
+    const m = itemDiffs.sort((a,b)=>b.d-a.d)[0];
+    lines.push(`你選的 <b>${cur.name}</b> 比四城平均貴 CAD ${fmt(curDiff)}／月（NT$ ${fmt(curDiff*r)}），主要貴在 <b>${m.label}</b>（比平均多 CAD ${fmt(m.d)}）。`);
+  }else{
+    const m = itemDiffs.sort((a,b)=>a.d-b.d)[0];
+    lines.push(`你選的 <b>${cur.name}</b> 比四城平均便宜 CAD ${fmt(-curDiff)}／月（NT$ ${fmt(-curDiff*r)}），主要省在 ${m.label}（比平均少 CAD ${fmt(-m.d)}）。`);
+  }
+  $("cmpInsight").innerHTML = lines.join("<br>");
+}
+/* 各城市找工作小提示（粗略整理，供參考） */
+const JOB_TIPS = {
+  vancouver: { level:"info", title:"溫哥華找工作小提示", points:[
+    "工作語言以英文為主；華人社群大，餐飲、零售有些職缺會加分給會說中文的人。",
+    "打工度假的人多，熱門職缺競爭激烈，加上房租最高，建議緩衝期抓寬一點。",
+    "冬天的惠斯勒（Whistler）滑雪場有不少季節性工作，有些會提供員工宿舍。"
+  ]},
+  toronto: { level:"info", title:"多倫多找工作小提示", points:[
+    "加拿大最大城市，辦公室、零售、餐飲的工作機會最多，但競爭也最大。",
+    "工作語言以英文為主；華人社群大，中文在部分職缺是加分。",
+    "職缺多集中在市中心，住得太遠交通費和通勤時間都會增加。"
+  ]},
+  calgary: { level:"info", title:"卡加利找工作小提示", points:[
+    "生活費比溫哥華、多倫多低，工作語言以英文為主。",
+    "附近的班夫（Banff）、露易絲湖是觀光區，夏季和滑雪季有大量飯店、餐飲的季節性工作，常附員工宿舍。",
+    "所在的艾伯塔省沒有省銷售稅，買東西只付聯邦 5% 消費稅。"
+  ]},
+  montreal: { level:"warn", title:"蒙特婁需要法文", points:[
+    "位於魁北克省，官方語言是法文。服務業、零售、餐飲等要接觸顧客的工作，通常會要求法文能力。",
+    "只會英文，找工作的選擇會明顯變少，建議拉長緩衝期。",
+    "已在「出發前準備」加入「學習基礎法文」「準備法文版履歷」。"
+  ]},
+};
+function renderLangNote(){
+  const tip = JOB_TIPS[state.city], el = $("langNote");
+  if(!tip){ el.style.display = "none"; return; }
+  el.style.display = "block";
+  el.className = "lang-note " + tip.level;
+  el.innerHTML = `<b>${tip.title}</b><ul>${tip.points.map(p=>`<li>${p}</li>`).join("")}</ul>`;
+}
+$("cmpBars").addEventListener("click", e => {
+  const row = e.target.closest(".cmp-row"); if(!row || row.dataset.city === state.city) return;
+  state.city = row.dataset.city; Object.assign(state, CITIES[state.city]);
+  renderCities(); syncInputs(); update();
+});
+
+function update(){
+  const r = rate();
+  renderCompare();
+  renderChecklist();
+  renderLangNote();
+  const monthly = MONTHLY_ITEMS.reduce((s,it)=> s + state[it.key], 0);
+
+  MONTHLY_ITEMS.forEach(it => $(it.key+"Out").innerHTML = dualCAD(state[it.key]));
+  $("iecOut").innerHTML = `<span class="p">CAD 369.75</span><span class="s">NT$ ${fmt(IEC_FEE*r)}</span>`;
+  $("depositOut").innerHTML = dualCAD(state.rent);
+  $("flightOut").innerHTML = dualTWD(state.flight);
+  $("insuranceOut").innerHTML = dualTWD(state.insurance);
+  $("bufferOut").innerHTML = `<span class="p">${state.buffer} 個月</span><span class="s">每月 CAD ${fmt(monthly)}／NT$ ${fmt(monthly*r)}</span>`;
+
+  const parts = [
+    { name:`生活費（${state.buffer} 個月）`, val: monthly*state.buffer*r, color:"var(--forest)" },
+    { name:"IEC 申請費", val: IEC_FEE*r, color:"var(--maple)" },
+    { name:"首月押金", val: state.rent*r, color:"var(--sand)" },
+    { name:"機票", val: state.flight, color:"var(--sage)" },
+    { name:"保險", val: state.insurance, color:"var(--stone)" },
+  ];
+  const totalTWD = parts.reduce((s,p)=>s+p.val,0);
+  $("totalTWD").textContent = fmt(totalTWD);
+  $("totalCAD").textContent = fmt(totalTWD/r);
+
+  $("bar").innerHTML = parts.map(p => `<div style="flex-grow:${p.val};background:${p.color}"></div>`).join("");
+  $("breakdown").innerHTML = parts.map(p => `
+    <tr><td><span class="dot" style="background:${p.color}"></span>${p.name}</td>
+    <td class="r">NT$ ${fmt(p.val)}</td><td class="r" style="color:var(--muted)">CAD ${fmt(p.val/r)}</td>
+    <td class="r pct">${totalTWD ? Math.round(p.val/totalTWD*100) : 0}%</td></tr>`).join("");
+
+  // 存錢進度
+  const pct = totalTWD ? Math.min(100, state.savings/totalTWD*100) : 0;
+  $("progFill").style.width = pct + "%";
+  $("savingsCAD").textContent = `≈ CAD ${fmt(state.savings/r)}`;
+  $("progText").textContent = `已完成 ${pct.toFixed(1)}%　·　目標 NT$ ${fmt(totalTWD)}（CAD ${fmt(totalTWD/r)}）`;
+
+  const gap = Math.max(0, totalTWD - state.savings);
+  const m = monthsLeft();
+  $("stGap").textContent = gap ? `NT$ ${fmt(gap)}` : "已達標";
+  $("stGapS").textContent = gap ? `CAD ${fmt(gap/r)}` : "";
+  $("stMonths").textContent = m ? `${m.toFixed(1)} 個月` : "已出發";
+  const per = gap === 0 ? 0 : (m >= 1 ? gap/m : gap);
+  $("stPerMonth").textContent = gap === 0 ? "—" : `NT$ ${fmt(per)}`;
+  $("stPerMonthS").textContent = gap === 0 ? "無需再存" : `CAD ${fmt(per/r)}`;
+
+  // 每月存款目標 vs 實際需要
+  const goal = state.monthlyGoal;
+  $("goalCAD").textContent = `≈ CAD ${fmt(goal/r)}`;
+  const monthDiff = goal - per;                          // 正數＝每月多存，負數＝每月不足
+  const projected = state.savings + goal * m;            // 出發時預計存款
+  const finalDiff = projected - totalTWD;                // 正數＝超出，負數＝不足
+  const sign = v => v >= 0 ? "+" : "−";
+  const cls = v => v >= 0 ? "var(--forest)" : "var(--amber)";
+
+  $("gMonthGap").textContent = `${sign(monthDiff)} NT$ ${fmt(Math.abs(monthDiff))}`;
+  $("gMonthGap").style.color = cls(monthDiff);
+  $("gMonthGapS").textContent = `${monthDiff>=0?"每月多存":"每月不足"} CAD ${fmt(Math.abs(monthDiff)/r)}`;
+  $("gProjected").textContent = `NT$ ${fmt(projected)}`;
+  $("gProjectedS").textContent = `CAD ${fmt(projected/r)}`;
+  $("gFinalGap").textContent = `${sign(finalDiff)} NT$ ${fmt(Math.abs(finalDiff))}`;
+  $("gFinalGap").style.color = cls(finalDiff);
+  $("gFinalGapS").textContent = `${finalDiff>=0?"超出":"不足"} CAD ${fmt(Math.abs(finalDiff)/r)}`;
+
+  // 出發失敗判定
+  const reasons = [];
+  if(gap > 0){
+    if(projected < totalTWD * FAIL_RATIO)
+      reasons.push(`照目前目標，出發時只存到總預算的 ${Math.round(projected/totalTWD*100)}%（不到一半）`);
+    if(m >= 1 && per > FAIL_MONTHLY)
+      reasons.push(`每月需存 NT$ ${fmt(per)}，超過 NT$ ${fmt(FAIL_MONTHLY)} 的合理上限`);
+    if(m < 1)
+      reasons.push(m === 0 ? `已到出發日，存款仍差 NT$ ${fmt(gap)}` : `不到一個月就要出發，存款仍差 NT$ ${fmt(gap)}`);
+  }
+  // 存款面的失敗（reasons）與準備事項逾期（overdue）分開顯示在各自的區塊
+  const moneyFailed = reasons.length > 0;
+  const overdue = overdueItems();
+  failed = moneyFailed || overdue.length > 0;
+  failSources = [];
+  if(moneyFailed) failSources.push({ id:"sec-savings", name:"存錢進度" });
+  if(overdue.length) failSources.push({ id:"sec-prep", name:"出發前準備" });
+  $("failTip").textContent = "建議：提高每月存款目標、延後出發日、換生活費較低的城市，或縮短緩衝期。";
+  const fbp = $("failBoxPrep");
+  $("failReasonsPrep").innerHTML = overdue.map(o => {
+    const due = new Date(new Date(state.departDate+"T00:00:00").getTime() - o.lead*86400000);
+    return `<li>${o.t}（建議 ${due.getFullYear()}/${due.getMonth()+1}/${due.getDate()} 前完成）</li>`;
+  }).join("");
+  if(overdue.length && !fbp.classList.contains("show")) fbp.classList.add("show");
+  if(!overdue.length) fbp.classList.remove("show");
+  // 三段狀態：順利 / 注意 / 出發失敗
+  const warns = [];
+  if(!moneyFailed && gap > 0){
+    if(finalDiff < 0) warns.push("出發時存款不足");
+    if(per > WARN_MONTHLY) warns.push(`每月需存超過 NT$ ${fmt(WARN_MONTHLY)}`);
+  }
+  if(state.savings / r < FUND_PROOF) warns.push("未達資金證明門檻");
+  const level = moneyFailed ? "fail" : warns.length ? "warn" : "ok";
+  const pill = $("statusPill");
+  pill.className = "status " + level;
+  pill.textContent = level === "fail" ? "● 出發失敗" : level === "warn" ? "● 注意：" + warns.join("、") : "● 進度順利";
+  $("progFill").className = level === "ok" ? "" : level;
+  if(moneyFailed){ $("gMonthGap").style.color = "var(--maple)"; $("gFinalGap").style.color = finalDiff < 0 ? "var(--maple)" : "var(--forest)"; }
+  const fb = $("failBox");
+  $("failReasons").innerHTML = reasons.map(t=>`<li>${t}</li>`).join("");
+  if(moneyFailed && !fb.classList.contains("show")){ fb.classList.add("show"); }
+  if(!moneyFailed) fb.classList.remove("show");
+  $("cdWrap").classList.toggle("failed", failed);
+  ready = !failed && gap === 0 && overdue.length === 0 && activeItems().every(it => state.checks.includes(it.i));
+  $("cdWrap").classList.toggle("ready", ready);
+  tick();
+
+  const gn = $("goalNotice");
+  if(gap === 0){
+    gn.className = "notice ok"; gn.textContent = "目前存款已達總預算，每月存的都是額外的備用金。";
+  }else if(finalDiff >= 0){
+    const monthsNeeded = goal > 0 ? Math.ceil(gap / goal) : 0;
+    const reach = new Date(); reach.setMonth(reach.getMonth() + monthsNeeded);
+    gn.className = "notice ok";
+    gn.textContent = `照這個目標，約 ${monthsNeeded} 個月後（${reach.getFullYear()} 年 ${reach.getMonth()+1} 月）就能存滿預算，出發時還會多出 NT$ ${fmt(finalDiff)}。`;
+  }else{
+    gn.className = moneyFailed ? "notice no" : "notice warn";
+    gn.textContent = `照這個目標，出發時還差 NT$ ${fmt(-finalDiff)}（CAD ${fmt(-finalDiff/r)}）。每月需再多存 NT$ ${fmt(-monthDiff)}，或調低生活費、縮短緩衝期。`;
+  }
+
+  const savingsCAD = state.savings / r;
+  const n = $("fundNotice");
+  if(savingsCAD >= FUND_PROOF){
+    n.className = "notice ok";
+    n.textContent = `存款已達 IEC 資金證明門檻 CAD ${fmt(FUND_PROOF)}（約 NT$ ${fmt(FUND_PROOF*r)}）。`;
+  }else{
+    const lack = FUND_PROOF - savingsCAD;
+    n.className = "notice warn";
+    n.textContent = `距離 IEC 資金證明門檻 CAD ${fmt(FUND_PROOF)}（約 NT$ ${fmt(FUND_PROOF*r)}）尚差 CAD ${fmt(lack)}（約 NT$ ${fmt(lack*r)}）。`;
+  }
+  save();
+}
+
+/* ===== 倒數 ===== */
+function tick(){
+  const msg = $("cdMsg");
+  if(!state.departDate){ msg.textContent = "請選擇出發日期。"; return; }
+  let diff = new Date(state.departDate+"T00:00:00") - new Date();
+  const wrap = $("cdWrap");
+  if(diff <= 0){
+    ["cdD","cdH","cdM","cdS"].forEach(id=>$(id).textContent="0");
+    wrap.classList.toggle("departed", !failed);
+    if(failed){ msg.textContent = "出發日已到，但仍有未解決的問題，請看下方紅框。"; return; }
+    const okHtml = `出發日到了！所有準備都完成，路上小心。BON VOYAGE — 祝你在加拿大一切順利`;
+    if(msg.innerHTML !== okHtml) msg.innerHTML = okHtml;
+    if(!celebrated){ celebrated = true; leafRain(); }
+    return;
+  }
+  wrap.classList.remove("departed"); celebrated = false;
+  const d = Math.floor(diff/86400000); diff %= 86400000;
+  const h = Math.floor(diff/3600000);  diff %= 3600000;
+  const mi = Math.floor(diff/60000);   diff %= 60000;
+  const s = Math.floor(diff/1000);
+  $("cdD").textContent = d;
+  $("cdH").textContent = String(h).padStart(2,"0");
+  $("cdM").textContent = String(mi).padStart(2,"0");
+  $("cdS").textContent = String(s).padStart(2,"0");
+  if(failed){
+    const links = failSources.map(f => `<a href="#${f.id}">「${f.name}」</a>`).join("和");
+    const html = `目前判定為出發失敗，原因請看下方${links}。`;
+    if(msg.innerHTML !== html) msg.innerHTML = html;
+    return;
+  }
+  if(ready){ msg.textContent = `準備全部完成，存款也夠了，${d} 天後就出發囉！`; return; }
+  msg.textContent = d > 365 ? "時間充裕，按部就班存錢即可。"
+    : d > 90 ? "建議開始準備申請文件。"
+    : d > 7 ? "確認住宿、保險與行李清單。"
+    : "出發在即，再檢查一次證件。";
+}
+
+/* ===== 清單 ===== */
+/* 找出未完成且已超過建議期限的準備事項 */
+function overdueItems(){
+  if(!state.departDate) return [];
+  const depart = new Date(state.departDate+"T00:00:00");
+  const today = new Date(); today.setHours(0,0,0,0);
+  return activeItems().filter(it => {
+    if(state.checks.includes(it.i)) return false;
+    const due = new Date(depart.getTime() - it.lead*86400000);
+    return Math.round((due - today)/86400000) < 0;
+  });
+}
+/* 緊急程度：依「建議期限」距離今天還有幾天 */
+function urgency(daysLeft){
+  if(daysLeft < 0)   return { cls:"u-over",  label:`逾期 ${-daysLeft} 天・失敗` };
+  if(daysLeft <= 30) return { cls:"u-urgent", label:`緊急・剩 ${daysLeft} 天` };
+  if(daysLeft <= 90) return { cls:"u-soon",  label:`近期・剩 ${daysLeft} 天` };
+  return { cls:"u-calm", label:`從容・剩 ${daysLeft} 天` };
+}
+function renderChecklist(){
+  const depart = state.departDate ? new Date(state.departDate+"T00:00:00") : null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const rows = activeItems().map(it => {
+    const due = depart ? new Date(depart.getTime() - it.lead*86400000) : null;
+    const daysLeft = due ? Math.round((due - today)/86400000) : Infinity;
+    return { ...it, due, daysLeft, done: state.checks.includes(it.i) };
+  });
+  // 未完成的照期限由近到遠排在前面；已完成的移到最後
+  rows.sort((a,b) => (a.done - b.done) || (a.daysLeft - b.daysLeft) || (a.i - b.i));
+  $("checklist").innerHTML = rows.map((r,n) => {
+    const u = r.done ? { cls:"u-done", label:"已完成" } : (r.due ? urgency(r.daysLeft) : { cls:"u-calm", label:"" });
+    const dueTxt = r.due ? `建議 ${r.due.getFullYear()}/${r.due.getMonth()+1}/${r.due.getDate()} 前` : "";
+    return `<li class="${r.done?"done":""} ${u.cls}" data-i="${r.i}">
+      <span class="idx">${String(n+1).padStart(2,"0")}</span><span class="box"></span>
+      <span class="txt">${r.t}${r.city ? `<span class="ftag">${CITIES[r.city].name}專屬</span>` : ""}<span class="due">${dueTxt}</span></span>
+      <span class="utag">${u.label}</span></li>`;
+  }).join("");
+  const over = rows.filter(r=>!r.done && r.daysLeft<0).length;
+  const urgent = rows.filter(r=>!r.done && r.daysLeft>=0 && r.daysLeft<=30).length;
+  const doneN = rows.filter(r=>r.done).length;
+  $("checkCount").textContent = `${doneN} / ${rows.length} 完成` + (over ? `・${over} 項逾期` : "") + (urgent ? `・${urgent} 項緊急` : "");
+  $("checkMsg").textContent = doneN === rows.length ? "所有準備事項已完成。" : "依建議期限由近到遠排序，期限為粗估值。";
+}
+$("checklist").addEventListener("click", e => {
+  const li = e.target.closest("li"); if(!li) return;
+  const i = +li.dataset.i;
+  state.checks = state.checks.includes(i) ? state.checks.filter(x=>x!==i) : [...state.checks, i];
+  update();
+});
+$("resetBtn").addEventListener("click", () => {
+  state = {...DEFAULTS, checks:[]}; save();
+  renderCities(); syncInputs(); renderChecklist(); update(); tick();
+});
+
+/* ===== 啟動 ===== */
+renderCities(); syncInputs(); renderChecklist(); update(); tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
